@@ -1,77 +1,85 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-
-import { ExternalLink } from './ExternalLink';
-import { MonoText } from './StyledText';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Image } from 'react-native';
 import { Text, View } from './Themed';
 
-import Colors from '@/constants/Colors';
+export default function HomeScreenInfo({ username = 'User' }: { username?: string }) {
+  const [greeting, setGreeting] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
 
-export default function EditScreenInfo({ path }: { path: string }) {
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) setGreeting('Good morning');
+      else if (hour < 18) setGreeting('Good afternoon');
+      else setGreeting('Good evening');
+    };
+
+    const updateDate = () => {
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setCurrentDate(new Date().toLocaleDateString('en-US', options));
+    };
+
+    updateGreeting();
+    updateDate();
+
+    // Update greeting and date every minute
+    const interval = setInterval(() => {
+      updateGreeting();
+      updateDate();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <View>
-      <View style={styles.getStartedContainer}>
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Open up the code for this screen:
-        </Text>
-
-        <View
-          style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-          darkColor="rgba(255,255,255,0.05)"
-          lightColor="rgba(0,0,0,0.05)">
-          <MonoText>{path}</MonoText>
-        </View>
-
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Change any of the text, save the file, and your app will automatically update.
-        </Text>
+    <View style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('../assets/images/revyl_favicon.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
       </View>
 
-      <View style={styles.helpContainer}>
-        <ExternalLink
-          style={styles.helpLink}
-          href="https://docs.expo.io/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet">
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
-            Tap here if your app doesn't automatically update after making changes
-          </Text>
-        </ExternalLink>
+      <View style={styles.greetingContainer}>
+        <Text style={styles.greeting}>
+          {greeting}, {username}
+        </Text>
+        <Text style={styles.date}>{currentDate}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  getStartedContainer: {
+  container: {
     alignItems: 'center',
-    marginHorizontal: 50,
+    padding: 20,
   },
-  homeScreenFilename: {
-    marginVertical: 7,
+  logoContainer: {
+    marginBottom: 30,
   },
-  codeHighlightContainer: {
-    borderRadius: 3,
-    paddingHorizontal: 4,
+  logo: {
+    width: 120,
+    height: 120,
   },
-  getStartedText: {
-    fontSize: 17,
-    lineHeight: 24,
+  greetingContainer: {
+    alignItems: 'center',
+  },
+  greeting: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 10,
     textAlign: 'center',
   },
-  helpContainer: {
-    marginTop: 15,
-    marginHorizontal: 20,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
+  date: {
+    fontSize: 18,
+    opacity: 0.8,
     textAlign: 'center',
   },
 });
