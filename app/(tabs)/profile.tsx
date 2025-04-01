@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-import ExerciseScreenInfo from '@/components/ExerciseScreenInfo';
+import ProfileScreenInfo from '@/components/ProfileScreenInfo';
 import { Text, View } from '@/components/Themed';
 
-export default function ExerciseScreen() {
+export default function ProfileScreen() {
   return (
     <View style={styles.container}>
-      <ExerciseScreenInfo path="app/(tabs)/exercise.tsx" />
+      <ProfileScreenInfo path="app/(tabs)/profile.tsx" />
     </View>
   );
 }

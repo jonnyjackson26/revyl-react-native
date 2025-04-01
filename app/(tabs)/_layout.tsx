@@ -30,7 +30,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -51,7 +51,28 @@ export default function TabLayout() {
         name="exercise"
         options={{
           title: 'Exercise',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="diet"
+        options={{
+          title: 'Diet',
+          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="metrics"
+        options={{
+          title: 'Metrics',
+          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>
