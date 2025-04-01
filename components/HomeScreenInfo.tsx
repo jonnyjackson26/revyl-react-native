@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text, View } from './Themed';
 import { SvgXml } from 'react-native-svg';
+import * as Font from 'expo-font';
 
 const svgMarkup = `<svg width="973" height="264" viewBox="0 0 973 264" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M933.279 205.333V0H972.879V205.333H933.279Z" fill="#EEEEEE"/>
@@ -15,6 +16,22 @@ const svgMarkup = `<svg width="973" height="264" viewBox="0 0 973 264" fill="non
 export default function HomeScreenInfo({ username = 'User' }: { username?: string }) {
   const [greeting, setGreeting] = useState('');
   const [currentDate, setCurrentDate] = useState('');
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFonts() {
+      try {
+        await Font.loadAsync({
+          'DMSans-Regular': require('../assets/fonts/static_dm_sans/DMSans-Regular.ttf'),
+        });
+        setFontLoaded(true);
+      } catch (error) {
+        console.error('Error loading fonts', error);
+      }
+    }
+    
+    loadFonts();
+  }, []);
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -37,7 +54,6 @@ export default function HomeScreenInfo({ username = 'User' }: { username?: strin
     updateGreeting();
     updateDate();
 
-    // Update greeting and date every minute
     const interval = setInterval(() => {
       updateGreeting();
       updateDate();
@@ -45,6 +61,10 @@ export default function HomeScreenInfo({ username = 'User' }: { username?: strin
 
     return () => clearInterval(interval);
   }, []);
+
+  if (!fontLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -91,5 +111,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     opacity: 0.8,
     textAlign: 'center',
+    fontFamily: 'DMSans-Regular',
   },
 });
