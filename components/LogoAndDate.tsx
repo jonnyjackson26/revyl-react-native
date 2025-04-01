@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text as RNText } from 'react-native';
 import { Text } from './Themed';
 import { SvgXml } from 'react-native-svg';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-masked-view/masked-view';
 
 const revylLogoMarkup = `<svg width="973" height="264" viewBox="0 0 973 264" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M933.279 205.333V0H972.879V205.333H933.279Z" fill="#333333"/>
@@ -18,6 +19,42 @@ interface LogoAndDateProps {
   currentDate: string;
 }
 
+// Helper function to get the correct ordinal suffix for a day
+function getDaySuffix(day: number): string {
+  if (day >= 11 && day <= 13) {
+    return 'th';
+  }
+  
+  switch (day % 10) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+}
+
+const GradientText = ({ style, children }: { style?: any, children: React.ReactNode }) => {
+  return (
+    <MaskedView
+      maskElement={
+        <RNText style={[style, { backgroundColor: 'transparent' }]}>
+          {children}
+        </RNText>
+      }
+    >
+      <LinearGradient
+        colors={['#e75a87', '#b654c5']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <RNText style={[style, { opacity: 0 }]}>
+          {children}
+        </RNText>
+      </LinearGradient>
+    </MaskedView>
+  );
+};
+
 export default function LogoAndDate({ currentDate }: LogoAndDateProps) {
   const formatDateForHeader = (dateString: string) => {
     if (!dateString) return '';
@@ -28,19 +65,13 @@ export default function LogoAndDate({ currentDate }: LogoAndDateProps) {
     const monthName = date.toLocaleDateString('en-US', { month: 'long' }).toLowerCase();
     const day = date.getDate();
     const year = date.getFullYear();
+    const suffix = getDaySuffix(day);
     
     return (
-      <>
-        <LinearGradient
-          colors={['#e75a87', '#b654c5']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.gradientContainer}
-        >
-          <Text style={styles.weekday}>{weekday}</Text>
-          <Text style={styles.fullDate}>{monthName} {day}th, {year}</Text>
-        </LinearGradient>
-      </>
+      <View style={styles.dateTextContainer}>
+        <GradientText style={styles.weekday}>{weekday}</GradientText>
+        <GradientText style={styles.fullDate}>{monthName} {day}{suffix}, {year}</GradientText>
+      </View>
     );
   };
 
@@ -83,25 +114,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
+  dateTextContainer: {
+    alignItems: 'flex-end',
+  },
   settingsContainer: {
     marginLeft: 20,
     marginRight: 10,
   },
-  gradientContainer: {
-    alignItems: 'flex-end',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
   weekday: {
     fontSize: 16,
-    color: 'white',
     fontFamily: 'DMSans-Regular',
     textAlign: 'right',
   },
   fullDate: {
     fontSize: 16,
-    color: 'white',
     fontFamily: 'DMSans-Regular',
     textAlign: 'right',
   }
