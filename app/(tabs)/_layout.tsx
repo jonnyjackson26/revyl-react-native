@@ -35,21 +35,21 @@ export default function TabLayout() {
         name="exercise"
         options={{
           title: 'Exercise',
-          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="heartbeat" color={color} />,
         }}
       />
       <Tabs.Screen
         name="diet"
         options={{
           title: 'Diet',
-          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
         }}
       />
       <Tabs.Screen
         name="metrics"
         options={{
           title: 'Metrics',
-          tabBarIcon: ({ color }) => <TabBarIcon name="building" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="line-chart" color={color} />,
         }}
       />
       <Tabs.Screen

@@ -1,77 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
-
-import { ExternalLink } from './ExternalLink';
-import { MonoText } from './StyledText';
 import { Text, View } from './Themed';
-
+import NotLoggedInPrompt from './NotLoggedInPrompt';
 import Colors from '@/constants/Colors';
 
-export default function ProfileScreenInfo({ path }: { path: string }) {
-  return (
-    <View>
-      <View style={styles.getStartedContainer}>
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Open up the code for this screen:
-        </Text>
+interface ProfileScreenInfoProps {
+  isLoggedIn?: boolean;
+  username?: string;
+}
 
-        <View
-          style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-          darkColor="rgba(255,255,255,0.05)"
-          lightColor="rgba(0,0,0,0.05)">
-          <MonoText>{path}</MonoText>
-        </View>
+export default function ProfileScreenInfo({ 
+  isLoggedIn = false, 
+  username = 'User' 
+}: ProfileScreenInfoProps) {
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  
+  // These handlers will be replaced with actual authentication logic later
+  const handleLogin = () => {
+    console.log('Login pressed');
+    // TODO: Implement authentication
+    setIsLoggingIn(true);
+    // Simulate login process
+    setTimeout(() => {
+      setIsLoggingIn(false);
+    }, 2000);
+  };
 
-        <Text
-          style={styles.getStartedText}
-          lightColor="rgba(0,0,0,0.8)"
-          darkColor="rgba(255,255,255,0.8)">
-          Change any of the text, save the file, and your app will automatically update.
-        </Text>
+  const handleSignup = () => {
+    console.log('Signup pressed');
+    // TODO: Implement account creation
+    setIsLoggingIn(true);
+    // Simulate signup process
+    setTimeout(() => {
+      setIsLoggingIn(false);
+    }, 2000);
+  };
+
+  // If user is not logged in, show the login prompt
+  if (!isLoggedIn) {
+    return (
+      <View style={styles.container}>
+        <NotLoggedInPrompt
+          onLogin={handleLogin}
+          onSignup={handleSignup}
+        />
       </View>
+    );
+  }
 
-      <View style={styles.helpContainer}>
-        <ExternalLink
-          style={styles.helpLink}
-          href="https://docs.expo.io/get-started/create-a-new-app/#opening-the-app-on-your-phonetablet">
-          <Text style={styles.helpLinkText} lightColor={Colors.light.tint}>
-            Tap here if your app doesn't automatically update after making changes
-          </Text>
-        </ExternalLink>
+  // Otherwise, show the user profile (to be implemented)
+  return (
+    <View style={styles.container}>
+      <View style={styles.profileContainer}>
+        <Text
+          style={styles.welcomeText}
+          lightColor="rgba(0,0,0,0.8)"
+          darkColor="rgba(255,255,255,0.8)">
+          Welcome, {username}!
+        </Text>
+        
+        <Text
+          style={styles.profileText}
+          lightColor="rgba(0,0,0,0.8)"
+          darkColor="rgba(255,255,255,0.8)">
+          Your profile information will appear here.
+        </Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  getStartedContainer: {
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  profileContainer: {
     alignItems: 'center',
     marginHorizontal: 50,
   },
-  homeScreenFilename: {
-    marginVertical: 7,
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  codeHighlightContainer: {
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
+  profileText: {
     fontSize: 17,
     lineHeight: 24,
-    textAlign: 'center',
-  },
-  helpContainer: {
-    marginTop: 15,
-    marginHorizontal: 20,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
     textAlign: 'center',
   },
 });
