@@ -44,14 +44,14 @@ function HomeScreenContent() {
           <LogoAndDate currentDate={new Date().toISOString()} />
           <View style={styles.widgetsContainer}>
             <LiveWorkoutWidget
-              expanded={expandedWidget === 'live'}
+              expanded={false}
               onExpand={handleLiveWidgetExpand}
-              onCollapse={() => setExpandedWidget(null)}
+              onCollapse={() => {}}
             />
             <PlannedWorkoutWidget
-              expanded={expandedWidget === 'planned'}
+              expanded={false}
               onExpand={() => setExpandedWidget('planned')}
-              onCollapse={() => setExpandedWidget(null)}
+              onCollapse={() => {}}
             />
           </View>
         </SafeAreaView>

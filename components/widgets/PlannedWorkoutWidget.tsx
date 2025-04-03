@@ -36,37 +36,20 @@ export const PlannedWorkoutWidget: React.FC<PlannedWorkoutWidgetProps> = ({
     </View>
   );
 
-  // In collapsed state, wrap with a centering View
-  if (!expanded) {
-    return (
-      <View style={styles.wrapper}>
-        <WidgetBase
-          collapsedContent={collapsedContent}
-          expandedContent={expandedContent}
-          expanded={false}
-          onExpand={onExpand}
-          onCollapse={onCollapse}
-          backgroundColor="#FF0000" // Red
-          title="Planned Workout"
-          subtitle="Upcoming Sessions"
-          style={styles.widget}
-        />
-      </View>
-    );
-  }
-
-  // In expanded state, don't use the wrapper
   return (
-    <WidgetBase
-      collapsedContent={collapsedContent}
-      expandedContent={expandedContent}
-      expanded={true}
-      onExpand={onExpand}
-      onCollapse={onCollapse}
-      backgroundColor="#FF0000" // Red
-      title="Planned Workout"
-      subtitle="Upcoming Sessions"
-    />
+    <View style={styles.wrapper}>
+      <WidgetBase
+        collapsedContent={collapsedContent}
+        expandedContent={expandedContent}
+        expanded={expanded}
+        onExpand={onExpand}
+        onCollapse={onCollapse}
+        backgroundColor="#FF0000" // Red
+        title="Planned Workout"
+        subtitle="Upcoming Sessions"
+        style={styles.widget}
+      />
+    </View>
   );
 };
 
