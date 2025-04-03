@@ -38,21 +38,41 @@ function HomeScreenContent() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {!expandedWidget && <LogoAndDate currentDate={new Date().toISOString()} />}
-      <View style={styles.container}>
+    <View style={styles.container}>
+      {!expandedWidget && (
+        <SafeAreaView style={styles.safeArea}>
+          <LogoAndDate currentDate={new Date().toISOString()} />
+          <View style={styles.widgetsContainer}>
+            <LiveWorkoutWidget
+              expanded={expandedWidget === 'live'}
+              onExpand={handleLiveWidgetExpand}
+              onCollapse={() => setExpandedWidget(null)}
+            />
+            <PlannedWorkoutWidget
+              expanded={expandedWidget === 'planned'}
+              onExpand={() => setExpandedWidget('planned')}
+              onCollapse={() => setExpandedWidget(null)}
+            />
+          </View>
+        </SafeAreaView>
+      )}
+      
+      {expandedWidget === 'live' && (
         <LiveWorkoutWidget
-          expanded={expandedWidget === 'live'}
-          onExpand={handleLiveWidgetExpand}
+          expanded={true}
+          onExpand={() => {}}
           onCollapse={() => setExpandedWidget(null)}
         />
+      )}
+      
+      {expandedWidget === 'planned' && (
         <PlannedWorkoutWidget
-          expanded={expandedWidget === 'planned'}
-          onExpand={() => setExpandedWidget('planned')}
+          expanded={true}
+          onExpand={() => {}}
           onCollapse={() => setExpandedWidget(null)}
         />
-      </View>
-    </SafeAreaView>
+      )}
+    </View>
   );
 }
 
@@ -65,12 +85,16 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  container: {
+  safeArea: {
+    flex: 1,
+  },
+  widgetsContainer: {
     flex: 1,
     padding: 10,
   },
 });
+

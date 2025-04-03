@@ -16,42 +16,47 @@ export const LiveWorkoutWidget: React.FC<LiveWorkoutWidgetProps> = ({
   onExpand,
   onCollapse,
 }) => {
+  // Content when widget is collapsed
+  const collapsedContent = (
+    <View style={styles.collapsedContent}>
+      <Text style={styles.title}>Live Workout</Text>
+      <Text style={styles.subtitle}>Current Session</Text>
+    </View>
+  );
+  
+  // Content when widget is expanded
+  const expandedContent = (
+    <View style={styles.expandedContent}>
+      <Text style={styles.expandedText}>Live Workout Expanded View</Text>
+      <Text style={styles.expandedSubtext}>
+        This is the detailed view of your live workout session.
+        You can add charts, metrics, and interactive elements here.
+      </Text>
+    </View>
+  );
+  
   return (
     <WidgetBase
+      collapsedContent={collapsedContent}
+      expandedContent={expandedContent}
       expanded={expanded}
       onExpand={onExpand}
       onCollapse={onCollapse}
-      style={[
-        styles.container,
-        expanded && styles.expanded
-      ]}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>Live Workout</Text>
-        <Text style={styles.subtitle}>Current Session</Text>
-        {/* Add your live workout content here */}
-      </View>
-    </WidgetBase>
+      backgroundColor="#FFA500" // Orange
+      title="Live Workout"
+      subtitle="Current Session"
+      style={styles.widget}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  widget: {
     width: WIDGET_SIZE,
     height: WIDGET_SIZE,
     margin: 10,
-    backgroundColor: '#FFA500', // Orange color
   },
-  expanded: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 1000,
-    backgroundColor: '#FFA500', // Orange color
-  },
-  content: {
+  collapsedContent: {
     flex: 1,
     padding: 20,
     justifyContent: 'center',
@@ -68,4 +73,23 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     color: 'white',
   },
+  expandedContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  expandedText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  expandedSubtext: {
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
+    opacity: 0.9,
+    paddingHorizontal: 20,
+  }
 }); 

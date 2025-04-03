@@ -1,89 +1,83 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Pressable } from 'react-native';
+import { StyleSheet, View, Dimensions, Pressable, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { 
-  useAnimatedStyle, 
-  withSpring,
-  useSharedValue,
-  withTiming
-} from 'react-native-reanimated';
-import { Text } from '../Themed';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface WidgetBaseProps {
-  children: React.ReactNode;
+  collapsedContent: React.ReactNode;
+  expandedContent: React.ReactNode;
   expanded: boolean;
   onExpand: () => void;
   onCollapse: () => void;
+  backgroundColor: string;
+  title?: string;
+  subtitle?: string;
   style?: any;
 }
 
 export const WidgetBase: React.FC<WidgetBaseProps> = ({
-  children,
+  collapsedContent,
+  expandedContent,
   expanded,
   onExpand,
   onCollapse,
+  backgroundColor,
+  title,
+  subtitle,
   style
 }) => {
-  const scale = useSharedValue(1);
-  const borderRadius = useSharedValue(20);
-  const position = useSharedValue({ x: 0, y: 0 });
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { scale: scale.value },
-        { translateX: position.value.x },
-        { translateY: position.value.y }
-      ],
-      borderRadius: borderRadius.value,
-    };
-  });
-
-  React.useEffect(() => {
-    if (expanded) {
-      scale.value = withSpring(1);
-      borderRadius.value = withTiming(0);
-      position.value = withSpring({ x: 0, y: 0 });
-    } else {
-      scale.value = withSpring(1);
-      borderRadius.value = withTiming(20);
-      position.value = withSpring({ x: 0, y: 0 });
-    }
-  }, [expanded]);
-
-  const content = (
-    <Animated.View style={[styles.container, animatedStyle, style]}>
+  // For collapsed widget
+  if (!expanded) {
+    return (
       <Pressable 
-        style={styles.content}
-        onPress={expanded ? undefined : onExpand}
+        style={[styles.collapsedContainer, { backgroundColor }, style]}
+        onPress={onExpand}
       >
-        {children}
+        {collapsedContent}
       </Pressable>
-      {expanded && (
-        <Pressable 
-          style={styles.closeButton}
-          onPress={onCollapse}
-        >
-          <Text style={styles.closeButtonText}>×</Text>
-        </Pressable>
-      )}
-    </Animated.View>
+    );
+  }
+  
+  // For expanded widget
+  return (
+    <>
+      {/* Full screen background color */}
+      <View style={[StyleSheet.absoluteFillObject, { backgroundColor }]} />
+      
+      {/* Content container */}
+      <View style={styles.expandedOuterContainer}>
+        <SafeAreaView style={styles.safeAreaContent}>
+          <View style={styles.expandedContent}>
+            {/* Header */}
+            {(title || subtitle) && (
+              <View style={styles.headerContainer}>
+                {title && <Text style={styles.title}>{title}</Text>}
+                {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+              </View>
+            )}
+            
+            {/* Main Content */}
+            <View style={styles.contentContainer}>
+              {expandedContent}
+            </View>
+            
+            {/* Close Button */}
+            <Pressable 
+              style={styles.closeButton}
+              onPress={onCollapse}
+            >
+              <Text style={styles.closeButtonText}>×</Text>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </View>
+    </>
   );
-
-  return expanded ? (
-    <View style={styles.expandedContainer}>
-      <SafeAreaView style={styles.safeArea}>
-        {content}
-      </SafeAreaView>
-    </View>
-  ) : content;
 };
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
+  collapsedContainer: {
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -92,22 +86,41 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    borderRadius: 20,
     overflow: 'hidden',
   },
-  expandedContainer: {
+  expandedOuterContainer: {
     position: 'absolute',
+    width: '100%',
+    height: '100%',
     top: 0,
     left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'white',
     zIndex: 1000,
   },
-  safeArea: {
+  safeAreaContent: {
     flex: 1,
   },
-  content: {
+  expandedContent: {
     flex: 1,
+    position: 'relative',
+    padding: 20,
+  },
+  headerContainer: {
+    marginBottom: 20,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: 'white',
+    opacity: 0.9,
   },
   closeButton: {
     position: 'absolute',
@@ -119,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000,
+    zIndex: 1001,
   },
   closeButtonText: {
     color: 'white',

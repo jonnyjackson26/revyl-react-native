@@ -4,6 +4,7 @@ import { WidgetBase } from './WidgetBase';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const WIDGET_HEIGHT = SCREEN_WIDTH * 0.5;
+const HORIZONTAL_PADDING = 20; // Consistent padding
 
 interface PlannedWorkoutWidgetProps {
   expanded: boolean;
@@ -16,42 +17,71 @@ export const PlannedWorkoutWidget: React.FC<PlannedWorkoutWidgetProps> = ({
   onExpand,
   onCollapse,
 }) => {
+  // Content when widget is collapsed
+  const collapsedContent = (
+    <View style={styles.collapsedContent}>
+      <Text style={styles.title}>Planned Workout</Text>
+      <Text style={styles.subtitle}>Upcoming Sessions</Text>
+    </View>
+  );
+  
+  // Content when widget is expanded
+  const expandedContent = (
+    <View style={styles.expandedContent}>
+      <Text style={styles.expandedText}>Planned Workout Schedule</Text>
+      <Text style={styles.expandedSubtext}>
+        Here you can view and manage your upcoming workout schedule.
+        Add new workouts, edit existing ones, or track your progress.
+      </Text>
+    </View>
+  );
+
+  // In collapsed state, wrap with a centering View
+  if (!expanded) {
+    return (
+      <View style={styles.wrapper}>
+        <WidgetBase
+          collapsedContent={collapsedContent}
+          expandedContent={expandedContent}
+          expanded={false}
+          onExpand={onExpand}
+          onCollapse={onCollapse}
+          backgroundColor="#FF0000" // Red
+          title="Planned Workout"
+          subtitle="Upcoming Sessions"
+          style={styles.widget}
+        />
+      </View>
+    );
+  }
+
+  // In expanded state, don't use the wrapper
   return (
     <WidgetBase
-      expanded={expanded}
+      collapsedContent={collapsedContent}
+      expandedContent={expandedContent}
+      expanded={true}
       onExpand={onExpand}
       onCollapse={onCollapse}
-      style={[
-        styles.container,
-        expanded && styles.expanded
-      ]}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>Planned Workout</Text>
-        <Text style={styles.subtitle}>Upcoming Sessions</Text>
-        {/* Add your planned workout content here */}
-      </View>
-    </WidgetBase>
+      backgroundColor="#FF0000" // Red
+      title="Planned Workout"
+      subtitle="Upcoming Sessions"
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: SCREEN_WIDTH - 20,
+  wrapper: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: HORIZONTAL_PADDING,
+  },
+  widget: {
+    width: SCREEN_WIDTH - (HORIZONTAL_PADDING * 2),
     height: WIDGET_HEIGHT,
     margin: 10,
-    backgroundColor: '#FF0000', // Red color
   },
-  expanded: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: 1000,
-    backgroundColor: '#FF0000', // Red color
-  },
-  content: {
+  collapsedContent: {
     flex: 1,
     padding: 20,
     justifyContent: 'center',
@@ -68,4 +98,23 @@ const styles = StyleSheet.create({
     opacity: 0.9,
     color: 'white',
   },
+  expandedContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  expandedText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  expandedSubtext: {
+    fontSize: 18,
+    color: 'white',
+    textAlign: 'center',
+    opacity: 0.9,
+    paddingHorizontal: 20,
+  }
 }); 
