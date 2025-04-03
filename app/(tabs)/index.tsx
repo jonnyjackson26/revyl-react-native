@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Audio } from 'expo-av';
+import * as Haptics from 'expo-haptics';
 import { WidgetProvider } from '@/components/context/WidgetContext';
 import { LiveWorkoutWidget } from '@/components/widgets/LiveWorkoutWidget';
 import { PlannedWorkoutWidget } from '@/components/widgets/PlannedWorkoutWidget';
@@ -32,9 +33,23 @@ function HomeScreenContent() {
     }
   };
 
-  const handleLiveWidgetExpand = () => {
+  const handleLiveWidgetExpand = async () => {
+    // Heavy impact haptic feedback
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     setExpandedWidget('live');
     playGongSound();
+  };
+
+  const handlePlannedWidgetExpand = async () => {
+    // Medium impact haptic feedback
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setExpandedWidget('planned');
+  };
+
+  const handleWidgetCollapse = async () => {
+    // Light impact haptic feedback when closing
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setExpandedWidget(null);
   };
 
   return (
@@ -50,7 +65,7 @@ function HomeScreenContent() {
             />
             <PlannedWorkoutWidget
               expanded={false}
-              onExpand={() => setExpandedWidget('planned')}
+              onExpand={handlePlannedWidgetExpand}
               onCollapse={() => {}}
             />
           </View>
@@ -61,7 +76,7 @@ function HomeScreenContent() {
         <LiveWorkoutWidget
           expanded={true}
           onExpand={() => {}}
-          onCollapse={() => setExpandedWidget(null)}
+          onCollapse={handleWidgetCollapse}
         />
       )}
       
@@ -69,7 +84,7 @@ function HomeScreenContent() {
         <PlannedWorkoutWidget
           expanded={true}
           onExpand={() => {}}
-          onCollapse={() => setExpandedWidget(null)}
+          onCollapse={handleWidgetCollapse}
         />
       )}
     </View>
